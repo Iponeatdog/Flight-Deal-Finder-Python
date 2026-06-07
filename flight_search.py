@@ -1,4 +1,4 @@
-import requests_cache
+import requests
 import os
 from dotenv import load_dotenv
 
@@ -7,11 +7,7 @@ class FlightSearch:
     def __init__(self):
         load_dotenv()
 
-        self.session = requests_cache.CachedSession(
-            'flight_cache',
-            expire_after=3600
-        )
-
+        self.session = requests.Session()
         self.FLIGHT_ENDPOINT = "https://serpapi.com/search"
         self.API_KEY = os.getenv("SERPAPI_API_KEY")
 
@@ -33,7 +29,5 @@ class FlightSearch:
             self.FLIGHT_ENDPOINT,
             params=flight_parameters
         )
-        print("From cache:", response.from_cache)
-        print(response.url)
         return response.json()
 

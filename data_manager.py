@@ -1,4 +1,3 @@
-import requests_cache
 import os
 from dotenv import load_dotenv
 import requests
@@ -13,26 +12,13 @@ class DataManager:
         self._user = os.environ["SHEETY_USERNAME"]
         self._password = os.environ["SHEETY_PASSWORD"]
         self._authorization = HTTPBasicAuth(self._user, self._password)
-        self.session = requests_cache.CachedSession(
-            'sheety_cache',
-            expire_after=3600
-        )
+        self.session = requests.Session()
 
-    def get_data(self):
-        response = self.session.get(url=self.SHEETY_ENDPOINT)
-        response.raise_for_status()
-
-        print("From cache:", response.from_cache)
-
-        return response.json()
-
-
-    def post_data(self):
-        response = self.session.get(url=self.SHEETY_ENDPOINT)
-        response.raise_for_status()
-
-        print("From cache:", response.from_cache)
-        return response.json()
+    def get_destination_data(self):
+        response = self.session.get(url=self.SHEETY_ENDPOINT, auth=self._authorization)
+        data = response.json()
+        destination_data = data["prices"]
+        return destination_data
 
     def update_lowest_price(self, row_id, new_price):
         new_data = {
