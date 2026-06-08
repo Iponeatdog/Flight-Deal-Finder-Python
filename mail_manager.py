@@ -9,13 +9,14 @@ class MailManager:
         self.gmail_user = os.environ["GMAIL_USER"]
         self.gmail_password = os.environ["GMAIL_PASSWORD"]
 
-    def send_mail(self, destination, message_body):
+    def sendmails(self, email_list, message_body, destination):
         with smtplib.SMTP("smtp.gmail.com") as connection:
             connection.starttls()
             connection.login(user=self.gmail_user, password=self.gmail_password)
-            connection.sendmail(
-                from_addr=self.gmail_user,
-                to_addrs=self.gmail_user,
-                msg=f"Subject:I found you a cheaper flight to {destination}\n\n{message_body}",
-            )
-            print(f"mail sent! ({destination}")
+            for email in email_list:
+                connection.sendmail(
+                    from_addr=self.gmail_user,
+                    to_addrs=email,
+                    msg=f"Subject:I found you a cheaper flight to {destination}\n\n{message_body}",
+                )
+                print(f"mail sent! ({destination}) to {email}")
